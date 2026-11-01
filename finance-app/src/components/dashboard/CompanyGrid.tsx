@@ -4,6 +4,7 @@
 import { COMPANIES, COMPANY_COLORS } from '../../services/config';
 import type { HistoricalPoint, Quote, TimeWindow } from '../../services/finance/types';
 import { CompanyChart } from './CompanyChart';
+import { CompanySpotlight } from './CompanySpotlight';
 import { SummaryCard } from './SummaryCard';
 
 interface Props {
@@ -48,6 +49,9 @@ export function CompanyGrid({ window, quotes, history, loadingSymbols, errors, o
           ))}
         </div>
       )}
+
+      {/* User-selected company spotlight — additive, never touches the store */}
+      <CompanySpotlight window={window} />
     </div>
   );
 }
