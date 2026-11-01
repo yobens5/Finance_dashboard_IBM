@@ -16,6 +16,10 @@ jobs:
     name: Install, lint, test, build
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: finance-app
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,18 +29,22 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: finance-app/package-lock.json
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
 
       - name: Lint
         run: npm run lint --if-present
 
       - name: Test
-        run: npm test --if-present -- --runInBand
+        run: npm test
 
       - name: Build
-        run: npm run build --if-present
+        run: npm run build
 
   bob-feature-flow:
     name: Bob-assisted feature workflow guidance
@@ -48,10 +56,10 @@ jobs:
         run: |
           echo "This workflow validates the repository and documents the expected Bob collaboration flow."
           echo "Example flow:"
-          echo "1. A PR is opened with a feature request."
-          echo "2. Bob analyzes the branch diff and request context."
-          echo "3. Bob implements the requested feature locally."
-          echo "4. Bob runs tests and build commands."
-          echo "5. Bob pushes updates back to the branch for review."
-          echo "6. A maintainer or external automation merges/closes the PR."
-
+          echo "1. A GitHub issue is filed with a feature request."
+          echo "2. Bob creates a bob/** branch from main."
+          echo "3. Bob analyses the codebase and implements the feature."
+          echo "4. Bob runs: npm run typecheck && npm test && npm run build."
+          echo "5. Bob commits and pushes the branch."
+          echo "6. Bob opens a PR that references 'Closes #N' for the issue."
+          echo "7. CI runs the validate job; a maintainer reviews and merges."
